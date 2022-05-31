@@ -7,13 +7,15 @@ import { FaBlog } from 'react-icons/fa'
 import { ImSearch } from 'react-icons/im'
 import { RiArrowDropDownLine, RiUserSettingsFill } from 'react-icons/ri'
 import { auth } from '../../utils/firebase'
+import Groups from '../groups/Groups'
+import Navigations from '../navigations/Navigations'
 import User from '../user/User'
 
 type HeaderProps = {}
 
 const Header: React.FC<HeaderProps> = () => {
   const [userSetting, setUserSetting] = useState<boolean>(false)
-
+  const [openDirectory, setOpenDirectory] = useState<boolean>(false)
   const [currentUser, loading, error] = useAuthState(auth)
 
   return (
@@ -25,13 +27,17 @@ const Header: React.FC<HeaderProps> = () => {
         </div>
       </Link>
 
+      <div onClick={() => setOpenDirectory(!openDirectory)}>
+        <Navigations />
+      </div>
+
       <div className=" flex h-8 flex-1 items-center rounded-full border-2 border-gray-300 bg-gray-200 px-4 hover:border-cta ">
+        <ImSearch className="text-xl font-bold text-btn" />
         <input
           type="text"
           placeholder="Search for a topic......."
           className=" flex-1 bg-transparent outline-none"
         />
-        <ImSearch className="text-xl font-bold text-btn" />
       </div>
 
       {currentUser ? (
@@ -60,6 +66,7 @@ const Header: React.FC<HeaderProps> = () => {
       )}
 
       {userSetting && <User />}
+      {openDirectory && <Groups />}
     </header>
   )
 }

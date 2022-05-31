@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PagesLayout from '../components/layout/PagesLayout'
-import { auth } from '../utils/firebase'
+import { auth, dataBase } from '../utils/firebase'
 
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { BiLoader, BiLogInCircle } from 'react-icons/bi'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import toast from 'react-hot-toast'
 import { ERRORS_FROM_FIREBASE } from '../utils/firebaseErrors'
+import { User } from 'firebase/auth'
+import { addDoc, collection } from 'firebase/firestore'
 
 type FormProps = {
   username: string
@@ -16,7 +18,7 @@ type FormProps = {
 }
 
 const signup: React.FC = () => {
-  const [createUserWithEmailAndPassword, user, loading, error] =
+  const [createUserWithEmailAndPassword, userCred, loading, error] =
     useCreateUserWithEmailAndPassword(auth)
 
   // const firebaseErr =
@@ -63,6 +65,19 @@ const signup: React.FC = () => {
       reset()
     }
   }
+
+  const createUserDoc = async (user: User) => {
+    await addDoc(
+      collection(dataBase, 'users'),
+      JSON.parse(JSON.stringify(user))
+    )
+  }
+
+  useEffect(() => {
+    if (userCred) {
+      createUserDoc(userCred.user)
+    }
+  }, [userCred])
 
   return (
     <PagesLayout title="SIGN-UP PAGE" description="sign-up page">

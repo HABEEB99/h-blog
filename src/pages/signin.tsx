@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PagesLayout from '../components/layout/PagesLayout'
 
 import { FcGoogle } from 'react-icons/fc'
@@ -9,9 +9,11 @@ import {
   useSignInWithEmailAndPassword,
   useSignInWithGoogle,
 } from 'react-firebase-hooks/auth'
-import { auth } from '../utils/firebase'
+import { auth, dataBase } from '../utils/firebase'
 import toast from 'react-hot-toast'
 import ResetPassword from '../components/reset/ResetPassword'
+import { User } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
 
 type FormProps = {
   email: string
@@ -28,7 +30,7 @@ const signin: React.FC = () => {
     formState: { errors },
   } = useForm<FormProps>()
 
-  const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth)
+  const [signInWithGoogle, userCred, loading, error] = useSignInWithGoogle(auth)
 
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth)
 
@@ -50,12 +52,24 @@ const signin: React.FC = () => {
     }
   }
 
+  const createUserDoc = async (user: User) => {
+    const userDocRef = doc(dataBase, 'users', user.uid)
+
+    await setDoc(userDocRef, JSON.parse(JSON.stringify(user)))
+  }
+
+  useEffect(() => {
+    if (userCred) {
+      createUserDoc(userCred.user)
+    }
+  }, [userCred])
+
   return (
     <PagesLayout title="SIGN-IN PAGE" description="Sign in page">
       <main className="m-1 flex h-full w-full items-center justify-center md:m-0">
         <div className="flex min-h-[55vh] w-[100vw] flex-col items-center rounded-lg border-[1px] border-cta bg-body shadow-2xl md:w-[50vw]">
           <button
-            onClick={() => signInWithGoogle()}
+            onClick={() => signInWithGoogle('', { prompt: 'select_account' })}
             className="my-5 flex h-12 w-[90%] items-center justify-center space-x-3 rounded-full bg-btn text-2xl font-bold text-gray-200 hover:bg-cta"
           >
             <FcGoogle className="mr-3" />
