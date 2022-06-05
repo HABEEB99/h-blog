@@ -13,14 +13,14 @@ import toast from 'react-hot-toast'
 import { IoMdAddCircle } from 'react-icons/io'
 import { auth, dataBase } from '../../utils/firebase'
 
-type GroupsProps = {}
+type CreateGroupProps = {}
 
 type FormInputs = {
   name: string
   type: string
 }
 
-const Groups: React.FC<GroupsProps> = () => {
+const CreateGroup: React.FC<CreateGroupProps> = () => {
   const [user] = useAuthState(auth)
   const [createGroup, setCreateGroup] = useState<boolean>(false)
 
@@ -99,10 +99,12 @@ const Groups: React.FC<GroupsProps> = () => {
       <div>
         <div
           onClick={() => setCreateGroup(!createGroup)}
-          className="flex cursor-pointer items-center space-x-2"
+          className="group flex cursor-pointer items-center space-x-2"
         >
-          <IoMdAddCircle className="text-2xl font-bold text-btn hover:text-green-500" />
-          <h3 className="font-medium text-purple-600">Create a new group</h3>
+          <IoMdAddCircle className="text-2xl font-bold text-btn group-hover:text-green-500" />
+          <h3 className="font-medium text-purple-500 group-hover:text-purple-700">
+            Create a new group
+          </h3>
         </div>
 
         {createGroup && (
@@ -183,4 +185,4 @@ const Groups: React.FC<GroupsProps> = () => {
     </div>
   )
 }
-export default Groups
+export default CreateGroup

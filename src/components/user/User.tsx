@@ -4,12 +4,14 @@ import React from 'react'
 import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth'
 
 import { BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useResetRecoilState } from 'recoil'
+import { groupState } from '../../atom/groupsAtom'
 import { userState } from '../../atom/userAtom'
 import { auth } from '../../utils/firebase'
 
 const User: React.FC = () => {
   const [openUser, setOpenUser] = useRecoilState(userState)
+  const resetGroupState = useResetRecoilState(groupState)
 
   const [currentUser, loading, error] = useAuthState(auth)
 
@@ -26,6 +28,7 @@ const User: React.FC = () => {
       ...prevState,
       open: false,
     }))
+    resetGroupState()
   }
 
   return (

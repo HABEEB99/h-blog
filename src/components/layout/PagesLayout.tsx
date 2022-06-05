@@ -20,7 +20,7 @@ const PagesLayout: React.FC<PagesLayoutProps> = ({
         {description && <meta name="description" content={description} />}
       </Head>
       <Header />
-      <main className="flex min-h-[88vh] w-screen items-center justify-center bg-body py-10 px-3 sm:px-5 md:px-12 lg:px-32">
+      <main className=" min-h-[88vh] w-screen bg-body py-5 px-3 sm:px-5 md:px-12 lg:px-32">
         {children}
       </main>
       <Footer />
